@@ -3,6 +3,7 @@ const router = express.Router();
 const Category = require("../categories/Category");
 const Article = require("./Article");
 const slugify = require("slugify");
+//const { ne } = require("sequelize/types/lib/operators");
 
 router.get('/admin/articles' , (req , res)=>{
 
@@ -117,5 +118,42 @@ router.post('/article/update' , (req , res)=>{
       res.redirect("/admin/articles");
 })
 });
+
+
+
+router.get('/articles/page/:num' , (req , res)=>{
+
+   var page = req.params.num;
+   var limit = 4;
+   var offset = 0;
+
+   if(isNaN(page) || page == 1){
+      offset = 0;
+   } else{
+      offset = (parseInt(page) -1) * limit;
+   }
+
+   Article.findAndCountAll({
+      limit: limit,
+      offset: offset
+   }).then(articles => {
+
+      var next;
+
+      if(offset + limit >= articles.count){
+         next = false;
+      } else{
+         next = true;
+      }
+
+      var result = {
+         next: next,
+         articles: articles
+      }
+
+      res.json(result);
+   });
+});
+
 
 module.exports = router;

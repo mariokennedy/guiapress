@@ -102,8 +102,6 @@ app.get('/category/:slug' , (req , res)=>{
     }).catch(err => {
       res.redirect("/");
     });
-  
-
 });
 
 app.listen(8080,() => {
