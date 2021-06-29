@@ -33,7 +33,8 @@ app.get('/' , (req , res)=>{
     Article.findAll({
       order:[
         ["id","desc"]
-      ]
+      ],
+      limit: 4
     }).then(articles => {
       
       Category.findAll().then(categories => {

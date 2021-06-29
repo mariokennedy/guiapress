@@ -130,12 +130,15 @@ router.get('/articles/page/:num' , (req , res)=>{
    if(isNaN(page) || page == 1){
       offset = 0;
    } else{
-      offset = (parseInt(page) -1) * limit;
+      offset = (parseInt(page) - 1) * limit;
    }
 
    Article.findAndCountAll({
       limit: limit,
-      offset: offset
+      offset: offset,
+      order:[
+         ["id","desc"]
+       ]
    }).then(articles => {
 
       var next;
@@ -145,13 +148,19 @@ router.get('/articles/page/:num' , (req , res)=>{
       } else{
          next = true;
       }
-
+      
       var result = {
+         page: parseInt(page),
          next: next,
          articles: articles
       }
-
-      res.json(result);
+      
+      Category.findAll().then(categories => {
+         res.render("admin/articles/page",{
+            result: result,
+            categories: categories
+         });
+      });
    });
 });
 
