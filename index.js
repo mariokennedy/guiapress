@@ -1,17 +1,24 @@
 const express = require("express");
 const app = express();
-
+const session = require("express-session");
 const connection = require("./database/database");
 
 const categoriesController = require("./categories/CategoriesController");
 const articlesController = require("./articles/ArticlesController");
+const usersController = require("./users/UsersController");
 
-const article = require("./articles/Article");
-const category = require("./categories/Category");
+
+const Users = require("./users/users");
 const Article = require("./articles/Article");
 const Category = require("./categories/Category");
 
 app.set("view engine", "ejs");
+app.use(session({
+    secret: "qualquercoisa",
+    cookie: {
+      maxAge: 30000
+    }
+}));
 app.use(express.static("public"));
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
@@ -27,6 +34,7 @@ connection
 
 app.use("/",categoriesController);
 app.use("/",articlesController);
+app.use("/",usersController);
   
 app.get('/' , (req , res)=>{
 
